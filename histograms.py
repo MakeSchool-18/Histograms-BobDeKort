@@ -18,12 +18,18 @@ class Dictogram(dict):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
             # TODO: increment item count
-            pass
+            if self.get(item) is not None:
+                self.tokens += 1
+            else:
+                self.types += 1
+                self.tokens += 1
+
+            self[item] = self.get(item, 0) + 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
         # TODO: retrieve item count
-        pass
+        return self.get(item, 0)
 
 
 class Listogram(list):
@@ -45,17 +51,21 @@ class Listogram(list):
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
         # TODO: retrieve item count
-        pass
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
         # TODO: check if item is in histogram
-        pass
+        if self._index(item) is None:
+            return False
+        return True
 
     def _index(self, target):
         """Return the index of the (target, count) entry if found, or None"""
         # TODO: implement linear search to find an item's index
-        pass
+        for index, (word, count) in enumerate(self):
+            if word == target:
+                return index
+        return None
 
 
 def test_histogram(text_list):
@@ -64,13 +74,21 @@ def test_histogram(text_list):
     hist_dict = Dictogram(text_list)
     print('dictogram:', hist_dict)
 
-    hist_list = Listogram(text_list)
-    print('listogram:', hist_list)
+    # hist_list = Listogram(text_list)
+    # print('listogram:', hist_list)
 
 
 def read_from_file(filename):
     """Parse the given file into a list of strings, separated by seperator."""
     return file(filename).read().strip().split()
+
+
+def getTotalAmountOfWords(histogram):
+    total = 0
+    for key in histogram:
+        count = histogram[key]
+        total += count
+    return total
 
 
 if __name__ == '__main__':
