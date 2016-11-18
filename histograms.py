@@ -46,11 +46,22 @@ class Listogram(list):
         """Update this histogram with the items in the given iterable"""
         for item in iterable:
             # TODO: increment item count
-            pass
+            index = self._index(item)
+            if index is None:
+                self.append((item, 1))
+                self.types += 1
+                self.tokens += 1
+            else:
+                self[index] = (item, self[index][1] + 1)
+                self.tokens += 1
 
     def count(self, item):
         """Return the count of the given item in this histogram, or 0"""
         # TODO: retrieve item count
+        index = self._index(item)
+        if index is None:
+            return 0
+        return self[index][1]
 
     def __contains__(self, item):
         """Return True if the given item is in this histogram, or False"""
@@ -74,8 +85,8 @@ def test_histogram(text_list):
     hist_dict = Dictogram(text_list)
     print('dictogram:', hist_dict)
 
-    # hist_list = Listogram(text_list)
-    # print('listogram:', hist_list)
+    hist_list = Listogram(text_list)
+    print('listogram:', hist_list)
 
 
 def read_from_file(filename):
